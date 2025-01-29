@@ -14,6 +14,7 @@ tab1, tab2, tab3 = st.tabs(["Penalty Kick Analyzer", "Take vs. Share Dilemma", "
 # ====================================================================================
 # Tab 1: Penalty Kick Analyzer
 # ====================================================================================
+
 with tab1:
 
     st.header("Penalty Kick Strategy Analysis")
@@ -214,9 +215,9 @@ with tab3:
 
     if sim_mode == 'Manual Input':
         st.sidebar.subheader("Audience Distribution")
-        rock = st.sidebar.number_input("Rock Choices", 0, 10000, 0)
-        paper = st.sidebar.number_input("Paper Choices", 0, 10000, 0)
-        scissors = st.sidebar.number_input("Scissors Choices", 0, 10000, 0)
+        rock = st.sidebar.number_input("Rock Choices", 0, 100000, 0)
+        paper = st.sidebar.number_input("Paper Choices", 0, 100000, 100000)
+        scissors = st.sidebar.number_input("Scissors Choices", 0, 100000, 0)
         total = rock + paper + scissors
         audience_dist = {
             'Rock': rock / total if total > 0 else 0.33,
@@ -224,7 +225,7 @@ with tab3:
             'Scissors': scissors / total if total > 0 else 0.33
         }
     else:
-        n_trials = st.sidebar.selectbox("Number of Trials", [100, 1000, 10000], index=2)
+        n_trials = st.sidebar.selectbox("Number of Trials", [100, 1000, 10000, 100000], index=2)
         if st.sidebar.button("Generate Random Trials"):
             audience_dist = dict(zip(
                 ['Rock', 'Paper', 'Scissors'],
@@ -237,7 +238,7 @@ with tab3:
         st.subheader("Simulation Results")
 
         # Generate choices
-        n = 10000  # Fixed to 10,000 trials
+        n = 100000  # Fixed to 100,000 trials
         bot_choices = np.random.choice(
             list(bot_strategy.keys()),
             size=n,
