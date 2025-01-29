@@ -59,12 +59,12 @@ st.set_page_config(page_title="Game Theory Suite", layout="wide")
 st.title("Game Theory Application Suite")
 
 # Create tabs
-tab1, tab2, tab3 = st.tabs(["Penalty Kick Analyzer", "Take vs. Share Dilemma", "RPS Analyzer"])
+credits, prison, iesds, stop_light, sexes, penalty, take_or_share, rps, conclusion = st.tabs(["Credits", "Prisoner's dilema","IESDS","Stop light","Battle of sexes","Penalty Kick Analyzer", "Take vs. Share Dilemma", "Rock Paper Scissors", "Conclusion?"])
 
 # ====================================================================================
 # Tab 1: Penalty Kick Analyzer
 # ====================================================================================
-with tab1:
+with penalty:
     st.title("Penalty Kick Analyzer")
     X_percent = st.slider('Kicker’s effectiveness when kicking right (X%)', 0, 100, 50, 1, key="penalty_slider")
     X = X_percent / 100.0
@@ -119,7 +119,7 @@ with tab1:
 # Tab 2: Take vs. Share Dilemma
 # ====================================================================================
 
-with tab2:
+with take_or_share:
 
     st.header("Take vs. Share Strategic Analysis")
 
@@ -202,7 +202,7 @@ with iesds:
 # ====================================================================================
 # Tab 3: RPS Analyzer
 # ====================================================================================
-with tab3:
+with rps:
     st.header("Advanced Rock-Paper-Scissors Analyzer")
 
     # ================== Payoff Matrix Section ==================
