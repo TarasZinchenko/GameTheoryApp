@@ -2,7 +2,57 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+import matplotlib.pyplot as plt
 import plotly.express as px
+
+# Function to calculate and normalize the probabilities
+def calculate_normalized_probabilities(player_strategy, accuracies):
+    effective_probabilities = [p * acc for p, acc in zip(player_strategy, accuracies)]
+    total = sum(effective_probabilities)
+    normalized_probabilities = [p / total for p in effective_probabilities]
+    return normalized_probabilities
+
+# Function to draw the goal with color-coded shot probabilities
+def draw_color_coded_goal(normalized_probabilities):
+    goal_width, goal_height = 7.32, 2.44
+    num_sections = len(normalized_probabilities)
+    section_width = goal_width / num_sections
+
+    sorted_indices = np.argsort(normalized_probabilities)
+    color_map = ['#FF4D4D', '#FFFF66', '#66FF66']  # Red, Yellow, Green
+    section_colors = [None] * num_sections
+    for rank, idx in enumerate(sorted_indices):
+        section_colors[idx] = color_map[rank]
+
+    fig, ax = plt.subplots(figsize=(7, 4))
+    ax.set_xlim(-1, goal_width + 1)
+    ax.set_ylim(-1, goal_height + 1)
+    ax.set_aspect('equal')
+    ax.axis('off')
+
+    # Draw grey goalposts
+    post_color = 'grey'
+    ax.plot([0, 0], [0, goal_height], color=post_color, linewidth=3)  # Left post
+    ax.plot([goal_width, goal_width], [0, goal_height], color=post_color, linewidth=3)  # Right post
+    ax.plot([0, goal_width], [goal_height, goal_height], color=post_color, linewidth=3)  # Crossbar
+
+    # Draw net inside the goal
+    net_lines = 8  # Number of vertical and horizontal lines
+    for i in range(1, net_lines):
+        # Vertical net lines
+        x = i * goal_width / net_lines
+        ax.plot([x, x], [0, goal_height], color='gray', linestyle='dotted', alpha=0.7)
+        # Horizontal net lines
+        y = i * goal_height / net_lines
+        ax.plot([0, goal_width], [y, y], color='gray', linestyle='dotted', alpha=0.7)
+
+    # Draw color-coded probability sections
+    for i, (norm_prob, color) in enumerate(zip(normalized_probabilities, section_colors)):
+        x_start = i * section_width
+        ax.add_patch(plt.Rectangle((x_start, 0), section_width, goal_height, color=color, alpha=0.5))  # More transparency
+        ax.text(x_start + section_width / 2, goal_height / 2, f"{norm_prob:.1%}", color="black", ha="center", va="center", fontsize=10, weight="bold")
+
+    return fig  # Explicitly return the figure
 
 # Configure the page
 st.set_page_config(page_title="Game Theory Suite", layout="wide")
@@ -16,53 +66,55 @@ tab1, tab2, tab3 = st.tabs(["Penalty Kick Analyzer", "Take vs. Share Dilemma", "
 # ====================================================================================
 
 with tab1:
-
-    st.header("Penalty Kick Strategy Analysis")
-
-    # Slider for X (percentage)
-    X_percent = st.slider(
-        'Kicker’s effectiveness when kicking left (X%)',
-        min_value=0,
-        max_value=100,
-        value=50,
-        step=1,
-        key="penalty_slider"
-    )
-    X = X_percent / 100.0  # Convert to decimal
-
-    # Calculate probabilities
+    st.title("Penalty Kick Analyzer")
+    X_percent = st.slider('Kicker’s effectiveness when kicking right (X%)', 0, 100, 50, 1, key="penalty_slider")
+    X = X_percent / 100.0
     p = 1 / (1 + X)
     q = X / (1 + X)
-
-    # Display results
     col1, col2 = st.columns(2)
     with col1:
         st.metric("Kicker's optimal probability to choose Left", f"{p * 100:.1f}%")
     with col2:
         st.metric("Goalie's optimal probability to dive Left", f"{q * 100:.1f}%")
-
-    # Plot
     X_percent_values = np.linspace(0, 100, 100)
     X_values = X_percent_values / 100.0
     p_values = 1 / (1 + X_values)
-
     fig1 = go.Figure()
-    fig1.add_trace(go.Scatter(x=X_percent_values, y=p_values * 100, mode='lines',
-                              line=dict(color='purple', width=3)))
-    fig1.update_layout(
-        title="Optimal Kick Strategy vs Effectiveness",
-        xaxis_title="X (% Effectiveness When Kicking Right)",
-        yaxis_title="Probability to Choose Left (%)",
-        height=500
-    )
+    fig1.add_trace(go.Scatter(x=X_percent_values, y=p_values * 100, mode='lines', line=dict(color='purple', width=3)))
+    fig1.update_layout(title="Optimal Kick Strategy vs Effectiveness", xaxis_title="X (% Effectiveness When Kicking Right)", yaxis_title="Probability to Choose Left (%)", height=500)
     st.plotly_chart(fig1, use_container_width=True)
 
-    # Explanation
     with st.expander("Why this counterintuitive result?"):
         st.markdown("""
         - **Higher right-side skill (X↑)**: Goalie anticipates this and dives right more often.  
         - **Paradoxical solution**: To exploit the goalie's bias, you must kick left **more frequently** than intuition suggests!
         """)
+
+    st.markdown("""
+    #### Payoff Matrix
+    |                | Keeper: Left | Keeper: Middle | Keeper: Right |
+    |----------------|----------------|-----------------|------------------------|
+    | **Kicker: Right**  | (0, 0)        | (8000, 0)       | (X1, Y1)              |
+    | **Kicker: Middle** | (0, 8000)     | (0, 0)    | (X2, Y2)              |
+    | **Kicker: Left** | (X3, Y3)     | (X4, Y4)      | (0, 0)              |
+    """)
+
+    # Input sliders for strategy and accuracy
+    player_strategy_left = st.slider("Probability for Left", 0.0, 1.0, 0.9)
+    player_strategy_middle = st.slider("Probability for Middle", 0.0, 1.0, 0.02)
+    player_strategy_right = st.slider("Probability for Right", 0.0, 1.0, 0.08)
+    accuracy_left = st.slider("Accuracy for Left", 0.0, 1.0, 0.5)
+    accuracy_middle = st.slider("Accuracy for Middle", 0.0, 1.0, 1.0)
+    accuracy_right = st.slider("Accuracy for Right", 0.0, 1.0, 1.0)
+
+    # Compute normalized probabilities
+    player_strategy = [player_strategy_left, player_strategy_middle, player_strategy_right]
+    accuracies = [accuracy_left, accuracy_middle, accuracy_right]
+    normalized_probabilities = calculate_normalized_probabilities(player_strategy, accuracies)
+
+    # Generate and display goal visualization
+    fig2 = draw_color_coded_goal(normalized_probabilities)
+    st.pyplot(fig2)  # Only call once
 
 # ====================================================================================
 # Tab 2: Take vs. Share Dilemma
