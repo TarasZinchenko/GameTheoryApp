@@ -118,5 +118,26 @@ with take_or_share:
     | **Player 1: Share** | (0, 8000)     | (4000, 4000)    |
     """)
 
+with iesds:
+    st.title("Game Theory Concepts: Strict Dominance and IESDS")
+
+    st.header("Strict Dominance")
+    st.write("""
+        - Strategy 'x' strictly dominates strategy 'y' for a player if 'x' generates a greater payoff than 'y' regardless of what the other players do.
+         - Rational players never play strictly dominated strategies. \n
+         -- Why play 'y' when you can play 'x' instead?
+    """)
+    st.image("IESDS1.png")
+    st.write("Regardless of what strategy P2 chooses, it is always in the best interest of P1 to confess, as the payout is bigger in any case, therefore the 'Confess' strategy strictly dominates 'Keep Quiet'")
+
+    st.header("Iteration Elimination of Strictly Dominated Strategies (IESDS)")
+    st.write("""
+        IESDS is a method where we iteratively remove strategies that are strictly dominated by other strategies,
+        simplifying the game to find the optimal strategies for the players.
+    """)
+    st.image("IESDS2.png")
+    st.write(" - If you ever see a strictly dominated strategy eliminate it immediately. \n - Order does not matter.")
+   
+        
 # ------------------------------------------------------------------------------------
 # Run with: streamlit run Demo.py
