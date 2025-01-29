@@ -8,12 +8,12 @@ st.set_page_config(page_title="Game Theory Apps", layout="wide")
 st.title("Game Theory Applications")
 
 # Create tabs
-tab1, tab2 = st.tabs(["Penalty Kick Analyzer", "Take vs. Share Dilemma"])
+credits, prison, iesds, stop_light, sexes, penalty, take_or_share, rps, conclusion = st.tabs(["Credits", "Prisoner's dilema","IESDS","Stop light","Battle of sexes","Penalty Kick Analyzer", "Take vs. Share Dilemma", "Rock Paper Scissors", "Conclusion?"])
 
 # ------------------------------------------------------------------------------------
 # Tab 1: Penalty Kick Analyzer
 # ------------------------------------------------------------------------------------
-with tab1:
+with penalty:
     st.header("Penalty Kick Strategy Analysis")
 
     # Slider for X (percentage)
@@ -64,7 +64,7 @@ with tab1:
 # ------------------------------------------------------------------------------------
 # Tab 2: Take vs. Share Dilemma
 # ------------------------------------------------------------------------------------
-with tab2:
+with take_or_share:
     st.header("Take vs. Share Strategic Analysis")
 
     # Slider for q
