@@ -15,6 +15,7 @@ tab1, tab2, tab3 = st.tabs(["Penalty Kick Analyzer", "Take vs. Share Dilemma", "
 # Tab 1: Penalty Kick Analyzer
 # ====================================================================================
 with tab1:
+
     st.header("Penalty Kick Strategy Analysis")
 
     # Slider for X (percentage)
@@ -65,7 +66,9 @@ with tab1:
 # ====================================================================================
 # Tab 2: Take vs. Share Dilemma
 # ====================================================================================
+
 with tab2:
+
     st.header("Take vs. Share Strategic Analysis")
 
     # Slider for q
