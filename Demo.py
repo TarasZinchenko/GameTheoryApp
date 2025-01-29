@@ -174,7 +174,6 @@ with take_or_share:
     | **Player 1: Share** | (0, 8000)     | (4000, 4000)    |
     """)
 
-<<<<<<< HEAD
 with iesds:
     st.title("Game Theory Concepts: Strict Dominance and IESDS")
 
@@ -198,7 +197,6 @@ with iesds:
         
 # ------------------------------------------------------------------------------------
 # Run with: streamlit run Demo.py
-=======
 # ====================================================================================
 # Tab 3: RPS Analyzer
 # ====================================================================================
@@ -348,4 +346,57 @@ with rps:
                               labels={'value': 'Frequency', 'variable': 'Player'},
                               title="Choice Distribution")
             st.plotly_chart(fig_dist, use_container_width=True)
->>>>>>> 29289bd6398e8a1923e3234a869da220492c10cb
+
+# ------------------------------------------------------------------------------------
+# Tab stop_light: Stop light game
+# This game explains what are Nash equilibria using the stop game.
+# ------------------------------------------------------------------------------------
+
+with stop_light:
+    st.title("Nash Equilibrium: Stoplight Game")
+    st.write("""
+             Picture a situation. Two cars are approaching an intersection.
+             If they both crash into each other they will get significantly delayed.
+
+             If they both stop, they will both wait, but most likely not for so long.
+
+
+             If one can go and the only wait it's the best scenario for both of them because they are not wasting their time.
+
+             This is represented below:
+             """)
+    st.image("images/stop_light.jpg")
+
+    st.write(
+        "Nash equilibrium is a law that everyone would want to follow even in the absence of an effective police force.")
+    st.write("The payoffs represent the consequences of their decisions.")
+
+    st.write("### Nash Equilibria")
+    st.write("- **(Go, Stop)**: If Player 1 goes and Player 2 stops, neither has an incentive to change.")
+    st.image("images/stop_light_go_stop.jpg")
+    st.write(
+        """
+        If player 1 stops instead of going, player 1 gets **-1** < **1**
+
+        If player 2 goes instead of stopping, player 2 gets **-5** < **0**
+        """)
+
+    st.write("- **(Stop, Go)**: If Player 1 stops and Player 2 goes, neither has an incentive to change.")
+    st.image("images/stop_light_stop_go.jpg")
+    st.write(
+        """
+        If player 1 goes instead of stopping, player 1 gets **-5** < **0**
+
+        If player 2 stops instead of going, player 2 gets **-1** < **1**
+        """)
+    st.write("These are the two Nash equilibria of the game:")
+    st.image("images/stop_light_equilibria.jpg")
+
+# ------------------------------------------------------------------------------------
+# Tab sexes: Battle of sexes
+# This game explains what is a mixed strategy.
+# ------------------------------------------------------------------------------------
+
+with sexes:
+    st.title("Battle of sexes")
+    st.write("So far the strategy has only been pure. This means that the players will always stick to one strategy.")
