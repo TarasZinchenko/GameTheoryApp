@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
+import plotly.express as px
 
 # Function to calculate and normalize the probabilities
 def calculate_normalized_probabilities(player_strategy, accuracies):
@@ -54,16 +55,15 @@ def draw_color_coded_goal(normalized_probabilities):
     return fig  # Explicitly return the figure
 
 # Configure the page
-st.set_page_config(page_title="Game Theory Apps", layout="wide")
-st.title("Game Theory Applications")
+st.set_page_config(page_title="Game Theory Suite", layout="wide")
+st.title("Game Theory Application Suite")
 
 # Create tabs
-tab1, tab2 = st.tabs(["Penalty Kick Analyzer", "Take vs. Share Dilemma"])
+tab1, tab2, tab3 = st.tabs(["Penalty Kick Analyzer", "Take vs. Share Dilemma", "RPS Analyzer"])
 
-# ------------------------------------------------------------------------------------
+# ====================================================================================
 # Tab 1: Penalty Kick Analyzer
-# ------------------------------------------------------------------------------------
-
+# ====================================================================================
 with tab1:
     st.title("Penalty Kick Analyzer")
     X_percent = st.slider('Kicker’s effectiveness when kicking right (X%)', 0, 100, 50, 1, key="penalty_slider")
@@ -115,10 +115,12 @@ with tab1:
     fig2 = draw_color_coded_goal(normalized_probabilities)
     st.pyplot(fig2)  # Only call once
 
-# ------------------------------------------------------------------------------------
+# ====================================================================================
 # Tab 2: Take vs. Share Dilemma
-# ------------------------------------------------------------------------------------
+# ====================================================================================
+
 with tab2:
+
     st.header("Take vs. Share Strategic Analysis")
 
     # Slider for q
@@ -172,5 +174,152 @@ with tab2:
     | **Player 1: Share** | (0, 8000)     | (4000, 4000)    |
     """)
 
-# ------------------------------------------------------------------------------------
-# Run with: streamlit run Demo.py
+# ====================================================================================
+# Tab 3: RPS Analyzer
+# ====================================================================================
+with tab3:
+    st.header("Advanced Rock-Paper-Scissors Analyzer")
+
+    # ================== Payoff Matrix Section ==================
+    st.sidebar.header("⚖️ RPS Configuration")
+    payoff_mode = st.sidebar.radio(
+        "Preset Modes",
+        ('Standard RPS', 'Modified RPS', 'Custom'),
+        help="Standard: Classic RPS rules\nModified: Adjusted payoffs\nCustom: Full control"
+    )
+
+    if payoff_mode == 'Standard RPS':
+        payoff_matrix = {
+            'Rock': {'Rock': (0, 0), 'Paper': (-1, 1), 'Scissors': (1, -1)},
+            'Paper': {'Rock': (1, -1), 'Paper': (0, 0), 'Scissors': (-1, 1)},
+            'Scissors': {'Rock': (-1, 1), 'Paper': (1, -1), 'Scissors': (0, 0)}
+        }
+    elif payoff_mode == 'Modified RPS':
+        payoff_matrix = {
+            'Rock': {'Rock': (0, 0), 'Paper': (-2, 2), 'Scissors': (1, -1)},
+            'Paper': {'Rock': (2, -2), 'Paper': (0, 0), 'Scissors': (-1, 1)},
+            'Scissors': {'Rock': (-1, 1), 'Paper': (1, -1), 'Scissors': (0, 0)}
+        }
+    else:
+        st.sidebar.subheader("Custom Payoffs")
+        payoff_matrix = {}
+        for move in ['Rock', 'Paper', 'Scissors']:
+            payoff_matrix[move] = {}
+            for opp_move in ['Rock', 'Paper', 'Scissors']:
+                bot_payoff = st.sidebar.number_input(
+                    f'{move} vs {opp_move} (Bot payoff)',
+                    min_value=-10,
+                    max_value=10,
+                    value=0
+                )
+                opp_payoff = -bot_payoff  # Zero-sum assumption
+                payoff_matrix[move][opp_move] = (bot_payoff, opp_payoff)
+
+    # Display payoff matrix
+    st.subheader("Current Payoff Matrix (Bot, Opponent)")
+    display_matrix = pd.DataFrame({
+        move: {opp_move: f"({payoff_matrix[move][opp_move][0]}, {payoff_matrix[move][opp_move][1]})"
+               for opp_move in payoff_matrix[move]}
+        for move in payoff_matrix
+    }).T
+    st.dataframe(display_matrix)
+
+    # ================== Bot Strategy Section ==================
+    st.sidebar.header("🤖 Bot Strategy")
+    bot_strategy_mode = st.sidebar.radio(
+        "Strategy Mode",
+        ('Optimal', 'Fixed R:25% P:25% S:50%'),
+        help="Select the bot's strategy"
+    )
+
+    if bot_strategy_mode == 'Optimal':
+        # Calculate expected utilities
+        opponent_strategy = {move: 1 / 3 for move in ['Rock', 'Paper', 'Scissors']}  # Default uniform
+        expected_utilities = {
+            move: sum(payoff_matrix[move][opp_move][0] * prob
+                      for opp_move, prob in opponent_strategy.items())
+            for move in ['Rock', 'Paper', 'Scissors']
+        }
+
+        # Calculate optimal strategy
+        positive_eu = {move: max(eu, 0) for move, eu in expected_utilities.items()}
+        total_eu = sum(positive_eu.values())
+        bot_strategy = {move: eu / total_eu for move, eu in positive_eu.items()} if total_eu > 0 else {move: 1 / 3 for
+                                                                                                       move in
+                                                                                                       ['Rock', 'Paper',
+                                                                                                        'Scissors']}
+    else:
+        bot_strategy = {'Rock': 0.25, 'Paper': 0.25, 'Scissors': 0.50}
+
+    # Display strategy
+    st.subheader("Bot's Strategy Distribution")
+    strategy_df = pd.DataFrame.from_dict(bot_strategy, orient='index', columns=['Probability'])
+    st.table(strategy_df.style.format("{:.2%}"))
+
+    # ================== Simulation Section ==================
+    st.sidebar.header("🎲 Simulation Settings")
+    sim_mode = st.sidebar.radio(
+        "Simulation Mode",
+        ('Manual Input', 'Random Trials'),
+        help="Choose audience input method"
+    )
+
+    if sim_mode == 'Manual Input':
+        st.sidebar.subheader("Audience Distribution")
+        rock = st.sidebar.number_input("Rock Choices", 0, 10000, 0)
+        paper = st.sidebar.number_input("Paper Choices", 0, 10000, 0)
+        scissors = st.sidebar.number_input("Scissors Choices", 0, 10000, 0)
+        total = rock + paper + scissors
+        audience_dist = {
+            'Rock': rock / total if total > 0 else 0.33,
+            'Paper': paper / total if total > 0 else 0.33,
+            'Scissors': scissors / total if total > 0 else 0.33
+        }
+    else:
+        n_trials = st.sidebar.selectbox("Number of Trials", [100, 1000, 10000], index=2)
+        if st.sidebar.button("Generate Random Trials"):
+            audience_dist = dict(zip(
+                ['Rock', 'Paper', 'Scissors'],
+                np.random.dirichlet(np.ones(3), size=1)[0]
+            ))
+        else:
+            audience_dist = {'Rock': 0.33, 'Paper': 0.33, 'Scissors': 0.34}
+
+    if st.sidebar.button("Run Simulation"):
+        st.subheader("Simulation Results")
+
+        # Generate choices
+        n = 10000  # Fixed to 10,000 trials
+        bot_choices = np.random.choice(
+            list(bot_strategy.keys()),
+            size=n,
+            p=list(bot_strategy.values())
+        )
+        audience_choices = np.random.choice(
+            list(audience_dist.keys()),
+            size=n,
+            p=list(audience_dist.values())
+        )
+
+        # Calculate scores
+        scores = [payoff_matrix[bot][audience][0] for bot, audience in zip(bot_choices, audience_choices)]
+        cumulative_scores = np.cumsum(scores)
+
+        # Results analysis
+        col1, col2 = st.columns(2)
+        with col1:
+            st.metric("Total Score (Bot)", f"{sum(scores):+,}")
+            fig_cum = px.line(x=range(n), y=cumulative_scores,
+                              labels={'x': 'Trial', 'y': 'Cumulative Score'},
+                              title="Score Progression")
+            st.plotly_chart(fig_cum, use_container_width=True)
+
+        with col2:
+            dist_df = pd.DataFrame({
+                'Bot': pd.Series(bot_choices).value_counts(normalize=True),
+                'Audience': pd.Series(audience_choices).value_counts(normalize=True)
+            })
+            fig_dist = px.bar(dist_df, barmode='group',
+                              labels={'value': 'Frequency', 'variable': 'Player'},
+                              title="Choice Distribution")
+            st.plotly_chart(fig_dist, use_container_width=True)
