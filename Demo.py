@@ -22,7 +22,7 @@ def draw_color_coded_goal(normalized_probabilities):
     section_width = goal_width / num_sections
 
     sorted_indices = np.argsort(normalized_probabilities)
-    color_map = ['#FF4D4D', '#FFFF66', '#66FF66']  # Red, Yellow, Green
+    color_map = ['#FF0000', '#F3FF00', '#2AFF00']  # Red, Yellow, Green
     section_colors = [None] * num_sections
     for rank, idx in enumerate(sorted_indices):
         section_colors[idx] = color_map[rank]
@@ -33,8 +33,11 @@ def draw_color_coded_goal(normalized_probabilities):
     ax.set_aspect('equal')
     ax.axis('off')
 
+    fig.patch.set_facecolor('black')
+    ax.set_facecolor('black')
+
     # Draw grey goalposts
-    post_color = 'grey'
+    post_color = 'white'
     ax.plot([0, 0], [0, goal_height], color=post_color, linewidth=3)  # Left post
     ax.plot([goal_width, goal_width], [0, goal_height], color=post_color, linewidth=3)  # Right post
     ax.plot([0, goal_width], [goal_height, goal_height], color=post_color, linewidth=3)  # Crossbar
@@ -44,10 +47,10 @@ def draw_color_coded_goal(normalized_probabilities):
     for i in range(1, net_lines):
         # Vertical net lines
         x = i * goal_width / net_lines
-        ax.plot([x, x], [0, goal_height], color='gray', linestyle='dotted', alpha=0.7)
+        ax.plot([x, x], [0, goal_height], color='white', linestyle='dotted', alpha=0.5)
         # Horizontal net lines
         y = i * goal_height / net_lines
-        ax.plot([0, goal_width], [y, y], color='gray', linestyle='dotted', alpha=0.7)
+        ax.plot([0, goal_width], [y, y], color='white', linestyle='dotted', alpha=0.5)
 
     # Draw color-coded probability sections
     for i, (norm_prob, color) in enumerate(zip(normalized_probabilities, section_colors)):
@@ -98,15 +101,6 @@ with penalty:
         - **Higher right-side skill (X↑)**: Goalie anticipates this and dives right more often.  
         - **Paradoxical solution**: To exploit the goalie's bias, you must kick left **more frequently** than intuition suggests!
         """)
-
-    st.markdown("""
-    #### Payoff Matrix
-    |                | Keeper: Left | Keeper: Middle | Keeper: Right |
-    |----------------|----------------|-----------------|------------------------|
-    | **Kicker: Right**  | (0, 0)        | (8000, 0)       | (X1, Y1)              |
-    | **Kicker: Middle** | (0, 8000)     | (0, 0)    | (X2, Y2)              |
-    | **Kicker: Left** | (X3, Y3)     | (X4, Y4)      | (0, 0)              |
-    """)
 
     # Input sliders for strategy and accuracy
     player_strategy_left = st.slider("Probability for Left", 0.0, 1.0, 0.9)
