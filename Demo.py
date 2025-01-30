@@ -192,7 +192,7 @@ with iesds:
          - Rational players never play strictly dominated strategies. \n
          -- Why play 'y' when you can play 'x' instead?
     """)
-    st.image(r"C:\Users\Gebruiker\PycharmProjects\learningchallange\GameTheoryApp\IESDS1.png")
+    st.image(r"IESDS1.png")
     st.write(
         "Regardless of what strategy P2 chooses, it is always in the best interest of P1 to confess, as the payout is bigger in any case, therefore the 'Confess' strategy strictly dominates 'Keep Quiet'")
 
