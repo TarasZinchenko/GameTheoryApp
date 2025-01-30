@@ -403,7 +403,7 @@ with stop_light:
 
 # ------------------------------------------------------------------------------------
 # Tab sexes: Battle of sexes
-# This game explains what is a mixed strategy.
+# This game explains what is a mixed strategy. And the payoffs
 # ------------------------------------------------------------------------------------
 
 with sexes:
