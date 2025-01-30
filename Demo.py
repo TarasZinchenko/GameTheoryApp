@@ -155,7 +155,7 @@ accuracy_right = st.slider("Accuracy for Right", 0.0, 1.0, accuracy_right)
    # Compute normalized probabilities
 player_strategy = [player_strategy_left, player_strategy_middle, player_strategy_right]
 accuracies = [accuracy_left, accuracy_middle, accuracy_right]
-normalized_probabilities = calculate_game_theory_probabilities(player_strategy, accuracies)
+normalized_probabilities = calculate_normalized_probabilities(player_strategy, accuracies)
     # Generate and display goal visualization
 fig2 = draw_color_coded_goal(normalized_probabilities)
 # Show the figure in Streamlit
