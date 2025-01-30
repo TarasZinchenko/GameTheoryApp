@@ -407,7 +407,8 @@ with stop_light:
 # ------------------------------------------------------------------------------------
 
 with sexes:
-    st.title("Battle of sexes")
+    st.title("Mixed strategies and Payoffs")
+    st.header("Battle of sexes")
     st.write("So far the strategy has only been pure. This means that the players will always stick to one strategy.")
     st.write("In the following case Ballet-Ballet and Fight-Fight are the equalibria.")
     st.image("images/sexes.jpg")
