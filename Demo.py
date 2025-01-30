@@ -192,7 +192,7 @@ with iesds:
          - Rational players never play strictly dominated strategies. \n
          -- Why play 'y' when you can play 'x' instead?
     """)
-    st.image(r"IESDS1.png")
+    st.image("images/IESDS1.png")
     st.write(
         "Regardless of what strategy P2 chooses, it is always in the best interest of P1 to confess, as the payout is bigger in any case, therefore the 'Confess' strategy strictly dominates 'Keep Quiet'")
 
@@ -201,7 +201,7 @@ with iesds:
         IESDS is a method where we iteratively remove strategies that are strictly dominated by other strategies,
         simplifying the game to find the optimal strategies for the players.
     """)
-    st.image("IESDS2.png")
+    st.image("images/IESDS2.png")
     st.write(" - If you ever see a strictly dominated strategy eliminate it immediately. \n - Order does not matter.")
 
 # ------------------------------------------------------------------------------------
