@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e84db6a-cab4-4f65-bbfd-0e4e536a840f" name="Changes" comment="" />
+    <list default="true" id="1e84db6a-cab4-4f65-bbfd-0e4e536a840f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/IESDS1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/IESDS2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/stop_light.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/stop_light_equilibria.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/stop_light_go_stop.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/images/stop_light_stop_go.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/Demo.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -35,6 +45,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "Merging main",
     "last_opened_file_path": "C:/Users/zinta/PycharmProjects/GameTheoryApp/venv"
   }
 }]]></component>

@@ -59,13 +59,13 @@ st.set_page_config(page_title="Game Theory Suite", layout="wide")
 st.title("Game Theory Application Suite")
 
 # Create tabs
-tab1, tab2, tab3 = st.tabs(["Penalty Kick Analyzer", "Take vs. Share Dilemma", "RPS Analyzer"])
+prison, iesds, stop_light, sexes, penalty, take_or_share, rps, credits = st.tabs(["Prisoner's dilema","IESDS","Stop light","Battle of sexes","Penalty Kick Analyzer", "Take vs. Share Dilemma", "Rock Paper Scissors", "Credits"])
 
 # ====================================================================================
 # Tab 1: Penalty Kick Analyzer
 # ====================================================================================
 
-with tab1:
+with penalty:
     st.title("Penalty Kick Analyzer")
     X_percent = st.slider('Kicker’s effectiveness when kicking right (X%)', 0, 100, 50, 1, key="penalty_slider")
     X = X_percent / 100.0
@@ -120,7 +120,7 @@ with tab1:
 # Tab 2: Take vs. Share Dilemma
 # ====================================================================================
 
-with tab2:
+with take_or_share:
 
     st.header("Take vs. Share Strategic Analysis")
 
@@ -175,10 +175,33 @@ with tab2:
     | **Player 1: Share** | (0, 8000)     | (4000, 4000)    |
     """)
 
+with iesds:
+    st.title("Game Theory Concepts: Strict Dominance and IESDS")
+
+    st.header("Strict Dominance")
+    st.write("""
+        - Strategy 'x' strictly dominates strategy 'y' for a player if 'x' generates a greater payoff than 'y' regardless of what the other players do.
+         - Rational players never play strictly dominated strategies. \n
+         -- Why play 'y' when you can play 'x' instead?
+    """)
+    st.image("IESDS1.png")
+    st.write("Regardless of what strategy P2 chooses, it is always in the best interest of P1 to confess, as the payout is bigger in any case, therefore the 'Confess' strategy strictly dominates 'Keep Quiet'")
+
+    st.header("Iteration Elimination of Strictly Dominated Strategies (IESDS)")
+    st.write("""
+        IESDS is a method where we iteratively remove strategies that are strictly dominated by other strategies,
+        simplifying the game to find the optimal strategies for the players.
+    """)
+    st.image("IESDS2.png")
+    st.write(" - If you ever see a strictly dominated strategy eliminate it immediately. \n - Order does not matter.")
+   
+        
+# ------------------------------------------------------------------------------------
+# Run with: streamlit run Demo.py
 # ====================================================================================
 # Tab 3: RPS Analyzer
 # ====================================================================================
-with tab3:
+with rps:
     st.header("Advanced Rock-Paper-Scissors Analyzer")
 
     # ================== Payoff Matrix Section ==================
@@ -324,3 +347,88 @@ with tab3:
                               labels={'value': 'Frequency', 'variable': 'Player'},
                               title="Choice Distribution")
             st.plotly_chart(fig_dist, use_container_width=True)
+
+# ------------------------------------------------------------------------------------
+# Tab stop_light: Stop light game
+# This game explains what are Nash equilibria using the stop game.
+# ------------------------------------------------------------------------------------
+
+with stop_light:
+    st.title("Nash Equilibrium: Stoplight Game")
+    st.write("""
+             Picture a situation. Two cars are approaching an intersection.
+             If they both crash into each other they will get significantly delayed.
+
+             If they both stop, they will both wait, but most likely not for so long.
+
+
+             If one can go and the only wait it's the best scenario for both of them because they are not wasting their time.
+
+             This is represented below:
+             """)
+    st.image("images/stop_light.jpg")
+
+    st.write(
+        "Nash equilibrium is a law that everyone would want to follow even in the absence of an effective police force.")
+    st.write("The payoffs represent the consequences of their decisions.")
+
+    st.write("### Nash Equilibria")
+    st.write("- **(Go, Stop)**: If Player 1 goes and Player 2 stops, neither has an incentive to change.")
+    st.image("images/stop_light_go_stop.jpg")
+    st.write(
+        """
+        If player 1 stops instead of going, player 1 gets **-1** < **1**
+
+        If player 2 goes instead of stopping, player 2 gets **-5** < **0**
+        """)
+
+    st.write("- **(Stop, Go)**: If Player 1 stops and Player 2 goes, neither has an incentive to change.")
+    st.image("images/stop_light_stop_go.jpg")
+    st.write(
+        """
+        If player 1 goes instead of stopping, player 1 gets **-5** < **0**
+
+        If player 2 stops instead of going, player 2 gets **-1** < **1**
+        """)
+    st.write("These are the two Nash equilibria of the game:")
+    st.image("images/stop_light_equilibria.jpg")
+
+# ------------------------------------------------------------------------------------
+# Tab sexes: Battle of sexes
+# This game explains what is a mixed strategy.
+# ------------------------------------------------------------------------------------
+
+with sexes:
+    st.title("Battle of sexes")
+    st.write("So far the strategy has only been pure. This means that the players will always stick to one strategy.")
+
+# ------------------------------------------------------------------------------------
+# Tab Credits
+# ------------------------------------------------------------------------------------
+with credits:
+    st.header("Project Credits & Documentation")
+
+    # Group members section
+    with st.container(border=True):
+        st.subheader("Team Members")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("""
+            - **John Doe**
+            - **Jane Smith**
+            - **Alex Johnson**
+            """)
+        with col2:
+            st.markdown("""
+            - **Sam Wilson**
+            - **Emily Brown**
+            - **Michael Lee**
+            """)
+
+    # References section
+    with st.container():
+        st.subheader("References")
+        st.markdown("""
+        - [William Spaniel - YouTube Guide Playlist](https://youtu.be/NSVmOC_5zrE?si=h5rLcX6NBepf4TNU)
+        - [Game Theory 101 by William Spaniel](https://gametheory101.com/courses/game-theory-101/)
+        """)
