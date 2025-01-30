@@ -102,22 +102,64 @@ with penalty:
         - **Paradoxical solution**: To exploit the goalie's bias, you must kick left **more frequently** than intuition suggests!
         """)
 
-    # Input sliders for strategy and accuracy
-    player_strategy_left = st.slider("Probability for Left", 0.0, 1.0, 0.9)
-    player_strategy_middle = st.slider("Probability for Middle", 0.0, 1.0, 0.02)
-    player_strategy_right = st.slider("Probability for Right", 0.0, 1.0, 0.08)
-    accuracy_left = st.slider("Accuracy for Left", 0.0, 1.0, 0.5)
-    accuracy_middle = st.slider("Accuracy for Middle", 0.0, 1.0, 1.0)
-    accuracy_right = st.slider("Accuracy for Right", 0.0, 1.0, 1.0)
+    # Create two columns for the buttons (this centers them horizontally)
+col1, col2 = st.columns([1, 1])  # You can adjust the ratio of the columns
 
-    # Compute normalized probabilities
-    player_strategy = [player_strategy_left, player_strategy_middle, player_strategy_right]
-    accuracies = [accuracy_left, accuracy_middle, accuracy_right]
-    normalized_probabilities = calculate_normalized_probabilities(player_strategy, accuracies)
+# Create the buttons and handle the logic for the preset sliders
+preset_messi = False
+preset_ronaldo = False
 
+# Align the first button to the right of the first column and second button to the left of the second column
+with col1:
+    if st.button("Messi"):
+        preset_messi = True
+        player_strategy_left = 0.398
+        player_strategy_middle = 0.078
+        player_strategy_right = 0.524
+        accuracy_left = 0.756
+        accuracy_middle = 0.875
+        accuracy_right = 0.759
+    else:
+        preset_messi = False
+
+with col2:
+    if st.button("Ronaldo"):
+        preset_ronaldo = True
+        player_strategy_left = 0.642
+        player_strategy_middle = 0.114
+        player_strategy_right = 0.244
+        accuracy_left = 0.873
+        accuracy_middle = 0.643
+        accuracy_right = 0.867
+    else:
+        preset_ronaldo = False
+
+# Default slider values (these can be updated by the presets)
+if not preset_messi and not preset_ronaldo:
+    player_strategy_left = 0.33
+    player_strategy_middle = 0.34
+    player_strategy_right = 0.33
+    accuracy_left = 1.0
+    accuracy_middle = 0.2
+    accuracy_right = 0.5
+
+# Input sliders for strategy and accuracy with updated values
+player_strategy_left = st.slider("Probability for Left", 0.0, 1.0, player_strategy_left)
+player_strategy_middle = st.slider("Probability for Middle", 0.0, 1.0, player_strategy_middle)
+player_strategy_right = st.slider("Probability for Right", 0.0, 1.0, player_strategy_right)
+accuracy_left = st.slider("Accuracy for Left", 0.0, 1.0, accuracy_left)
+accuracy_middle = st.slider("Accuracy for Middle", 0.0, 1.0, accuracy_middle)
+accuracy_right = st.slider("Accuracy for Right", 0.0, 1.0, accuracy_right)
+
+
+   # Compute normalized probabilities
+player_strategy = [player_strategy_left, player_strategy_middle, player_strategy_right]
+accuracies = [accuracy_left, accuracy_middle, accuracy_right]
+normalized_probabilities = calculate_game_theory_probabilities(player_strategy, accuracies)
     # Generate and display goal visualization
-    fig2 = draw_color_coded_goal(normalized_probabilities)
-    st.pyplot(fig2)  # Only call once
+fig2 = draw_color_coded_goal(normalized_probabilities)
+# Show the figure in Streamlit
+st.pyplot(fig2)  # Only call once
 
 # ====================================================================================
 # Tab 2: Take vs. Share Dilemma
