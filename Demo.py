@@ -4,6 +4,8 @@ import pandas as pd
 import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import plotly.express as px
+import random
+
 
 # Function to calculate and normalize the probabilities
 def calculate_normalized_probabilities(player_strategy, accuracies):
@@ -11,6 +13,7 @@ def calculate_normalized_probabilities(player_strategy, accuracies):
     total = sum(effective_probabilities)
     normalized_probabilities = [p / total for p in effective_probabilities]
     return normalized_probabilities
+
 
 # Function to draw the goal with color-coded shot probabilities
 def draw_color_coded_goal(normalized_probabilities):
@@ -49,17 +52,21 @@ def draw_color_coded_goal(normalized_probabilities):
     # Draw color-coded probability sections
     for i, (norm_prob, color) in enumerate(zip(normalized_probabilities, section_colors)):
         x_start = i * section_width
-        ax.add_patch(plt.Rectangle((x_start, 0), section_width, goal_height, color=color, alpha=0.5))  # More transparency
-        ax.text(x_start + section_width / 2, goal_height / 2, f"{norm_prob:.1%}", color="black", ha="center", va="center", fontsize=10, weight="bold")
+        ax.add_patch(
+            plt.Rectangle((x_start, 0), section_width, goal_height, color=color, alpha=0.5))  # More transparency
+        ax.text(x_start + section_width / 2, goal_height / 2, f"{norm_prob:.1%}", color="black", ha="center",
+                va="center", fontsize=10, weight="bold")
 
     return fig  # Explicitly return the figure
+
 
 # Configure the page
 st.set_page_config(page_title="Game Theory Suite", layout="wide")
 st.title("Game Theory Application Suite")
 
-# Create tabs
-prison, iesds, stop_light, sexes, penalty, take_or_share, rps, credits = st.tabs(["Prisoner's dilema","IESDS","Stop light","Battle of sexes","Penalty Kick Analyzer", "Take vs. Share Dilemma", "Rock Paper Scissors", "Credits"])
+introduction, prison, iesds, stop_light, sexes, penalty, take_or_share, rps, credits = st.tabs(
+    ["Introduction", "Prisoner's dilema", "IESDS", "Stop light", "Battle of sexes", "Penalty Kick Analyzer",
+     "Take vs. Share Dilemma", "Rock Paper Scissors", "Credits"])
 
 # ====================================================================================
 # Tab 1: Penalty Kick Analyzer
@@ -81,7 +88,9 @@ with penalty:
     p_values = 1 / (1 + X_values)
     fig1 = go.Figure()
     fig1.add_trace(go.Scatter(x=X_percent_values, y=p_values * 100, mode='lines', line=dict(color='purple', width=3)))
-    fig1.update_layout(title="Optimal Kick Strategy vs Effectiveness", xaxis_title="X (% Effectiveness When Kicking Right)", yaxis_title="Probability to Choose Left (%)", height=500)
+    fig1.update_layout(title="Optimal Kick Strategy vs Effectiveness",
+                       xaxis_title="X (% Effectiveness When Kicking Right)",
+                       yaxis_title="Probability to Choose Left (%)", height=500)
     st.plotly_chart(fig1, use_container_width=True)
 
     with st.expander("Why this counterintuitive result?"):
@@ -121,7 +130,6 @@ with penalty:
 # ====================================================================================
 
 with take_or_share:
-
     st.header("Take vs. Share Strategic Analysis")
 
     # Slider for q
@@ -184,18 +192,18 @@ with iesds:
          - Rational players never play strictly dominated strategies. \n
          -- Why play 'y' when you can play 'x' instead?
     """)
-    st.image("IESDS1.png")
-    st.write("Regardless of what strategy P2 chooses, it is always in the best interest of P1 to confess, as the payout is bigger in any case, therefore the 'Confess' strategy strictly dominates 'Keep Quiet'")
+    st.image("images/IESDS1.png")
+    st.write(
+        "Regardless of what strategy P2 chooses, it is always in the best interest of P1 to confess, as the payout is bigger in any case, therefore the 'Confess' strategy strictly dominates 'Keep Quiet'")
 
     st.header("Iteration Elimination of Strictly Dominated Strategies (IESDS)")
     st.write("""
         IESDS is a method where we iteratively remove strategies that are strictly dominated by other strategies,
         simplifying the game to find the optimal strategies for the players.
     """)
-    st.image("IESDS2.png")
+    st.image("images/IESDS2.png")
     st.write(" - If you ever see a strictly dominated strategy eliminate it immediately. \n - Order does not matter.")
-   
-        
+
 # ------------------------------------------------------------------------------------
 # Run with: streamlit run Demo.py
 # ====================================================================================
@@ -395,34 +403,193 @@ with stop_light:
 
 # ------------------------------------------------------------------------------------
 # Tab sexes: Battle of sexes
-# This game explains what is a mixed strategy.
+# This game explains what is a mixed strategy. And the payoffs
 # ------------------------------------------------------------------------------------
 
 with sexes:
     st.title("Battle of sexes")
     st.write("So far the strategy has only been pure. This means that the players will always stick to one strategy.")
+    st.write("In the following case Ballet-Ballet and Fight-Fight are the equalibria.")
+    st.image("images/sexes.jpg")
+    st.write("What if we combine more strategies?")
 
-# ------------------------------------------------------------------------------------
-# Tab Credits
-# ------------------------------------------------------------------------------------
+    st.header("Mixed strategy")
+    st.write("In this strategy the players will mix both of their strategies with a probability P")
+    st.subheader("Algorithm for solving mixed strategies:")
+    st.write("Since both players can have the same decisions, for simplification let's now refer to these decisions as the following:")
+    st.image("images/mixed_strategies.jpg")
+    st.write("Firstly, we must solve for Player 1's mixed strategy and therefore we isolate Player 2's decisions.")
+
+    st.image("images/p1s_mixed_strategy.jpg")
+    st.write("""
+                If Player 1 does a mixed strategy:
+              
+                Player 2 will receive **2** with the probability **P_Ballet** and **0** with the probability **(1 - P_Ballet)**
+                """)
+    st.write("To quantify this we use a metric called EU (Expected Utilization)")
+    st.write("Player 2's EU when she goes left is the following:")
+    st.latex("EU_{left} = (P_{up})*(2) + (1 - P_{up})*(0)")
+    st.write("Player 2's EU when she goes right is the following:")
+    st.latex("EU_{right} = (P_{up})*(0) + (1 - P_{up})*(0)")
+
+    st.write("Now the whole idea of mixed strategy is to optimize our strategy to make it indifferent for the other player what decision they make.")
+    st.write("We do that by finding with what probability the EUs are equal to each other.")
+    st.latex("EU_{left} = EU_{right}")
+    st.latex("(P_{up})*(2) + (1 - P_{up})*(0) = (P_{up})*(0) + (1 - P_{up})*(0)")
+    st.latex("P_{up} = 1/3")
+
+    st.write("This means, that if P1 decides to use a mixed strategy, they will go to the **ballet (up)** with the probability of **1/3** and to the **fight (down)** with the probability of **2/3**")
+
+    st.write("Then we can do the same for the Player 2's mixed strategy:")
+    st.latex("EU_{up}=EU_{down}")
+    st.latex('(P_{left})(1) + (1 - P_{left})(0) = (P_{left})(0) + (1-P_{left})(2)')
+    st.latex('P_{left} = 2/3')
+    st.write("This means that Player 2 will go to the ballet (left) with probability 2/3 and to the fight (right) with probability 1/3")
+    st.image("images/mixed_strat_complete.jpg")
+
+    st.subheader("Payoffs")
+    st.write("The strategy we have identified before is ensures that both players going to have the same Expected Utilization, however that doesn't mean that such strategy will be optimal.")
+    st.write("To validate, it is necessary to calculate the payoffs for each outcome.")
+    st.write("To calculate the payoff we need to multiply the outcome with the multiplication and sum all the products.")
+    st.write("That gives us the following matrix for Player 1:")
+    st.image("images/player1_payoffs.jpg")
+    st.latex("EU_1 = (1)(1/3)(2/3) + (0)(2/3)(2/3) + (0)(1/3)(1/3) + (2)(2/3)(1/3)")
+    st.latex("EU_1 = 2/3")
+    st.write("And for player 2:")
+    st.latex("EU_2 = (2)(1/3)(2/3) + (0)(2/3)(2/3) + (0)(1/3)(1/3) + (1)(2/3)(1/3)")
+    st.latex("EU_2 = 2/3")
+
+    st.write("This means that the mixed strategy is worse than a pure strategy. With pure strategy the players will achieve at worse the outcome of 1, whereas with mixed it will be only 2/3.")
+    st.write("THis is caused by the fact that the couple often end up in going to different places which drags down the payoffs.")
+
+
+def prisoners_dilemma():
+    """
+    Simulate the Prisoner's Dilemma game using Streamlit where the user plays against different AI strategies.
+    """
+    st.header("Prisoner's Dilemma Simulation")
+
+    opponents = {
+        "Always Keep Quiet": always_keep_quiet,
+        "Always Confess": always_confess,
+        "Tit for Tat": tit_for_tat,
+        "Random": random_choice
+    }
+
+    col1, col2 = st.columns([2, 1])
+
+    if "user_score" not in st.session_state:
+        st.session_state.user_score = 0
+        st.session_state.opponent_score = 0
+        st.session_state.history = []
+
+    with col1:
+        opponent_name = st.selectbox("Choose an opponent:", list(opponents.keys()))
+        opponent_func = opponents[opponent_name]
+
+        col_btn1, col_btn2 = st.columns(2)
+
+        if col_btn1.button("Keep Quiet", key="keep_quiet", use_container_width=True):
+            user_move = "keep_quiet"
+            opponent_move = opponent_func(st.session_state.history)
+            user_points, opp_points = payoff(user_move, opponent_move)
+            st.session_state.user_score += user_points
+            st.session_state.opponent_score += opp_points
+            st.session_state.history.append((user_move, opponent_move))
+
+        if col_btn2.button("Confess", key="confess", use_container_width=True):
+            user_move = "confess"
+            opponent_move = opponent_func(st.session_state.history)
+            user_points, opp_points = payoff(user_move, opponent_move)
+            st.session_state.user_score += user_points
+            st.session_state.opponent_score += opp_points
+            st.session_state.history.append((user_move, opponent_move))
+
+    with col2:
+        st.subheader("Score & Payoff Matrix")
+        st.metric(label="Your Score", value=st.session_state.user_score)
+        st.metric(label="Opponent Score", value=st.session_state.opponent_score)
+
+        payoff_matrix = pd.DataFrame({
+            "You Keep Quiet": ["(-1,-1)", "(-12,0)"],
+            "You Confess": ["(0,12)", "(-8,-8)"]
+        }, index=["Opp. Keep Quiet", "Opp. Confess"])
+        st.table(payoff_matrix)
+
+
+def always_keep_quiet(history):
+    return "keep_quiet"
+
+
+def always_confess(history):
+    return "confess"
+
+
+def tit_for_tat(history):
+    if not history:
+        return "keep_quiet"
+    return history[-1][0]
+
+
+def random_choice(history):
+    return random.choice(["keep_quiet", "confess"])
+
+
+def payoff(player1, player2):
+    if player1 == "keep_quiet" and player2 == "keep_quiet":
+        return (-1, -1)
+    elif player1 == "keep_quiet" and player2 == "confess":
+        return (-12, 0)
+    elif player1 == "confess" and player2 == "keep_quiet":
+        return (0, 12)
+    else:
+        return (-8, -8)
+
+
+with prison:
+    prisoners_dilemma()
+
+with introduction:
+    st.title("Introduction")
+
+    st.write(
+        """
+        ##### Game Theory is all around us—whether we realize it or not. From negotiations and traffic decisions to sports strategies and even everyday choices, the way we interact with others follows strategic patterns. Our app is designed to bring these concepts to life through interactive experiences that let you explore, play, and learn at your own pace.
+
+        ##### With our app, you won’t just read about Game Theory—you’ll experience it. Dive into classic strategic dilemmas and test your decision-making skills with our interactive modules:
+        
+        ##### The Prisoner’s Dilemma – A classic example of why cooperation is hard, even when it's beneficial.
+        
+        ##### IESDS (Iterated Elimination of Strictly Dominated Strategies) – A method to predict rational choices in strategic games.
+        
+        ##### The Stoplight Game – A real-world application of Nash Equilibrium in traffic decisions.
+        
+        ##### The Battle of the Sexes – Exploring mixed strategies and payoffs in coordination problems.
+        
+        ##### Penalty Kick Analyzer – How professional athletes use mixed strategies in real-life competition.
+        
+        ##### Take vs. Share Dilemma – Examining the tension between selfishness and cooperation.
+        
+        ##### Rock, Paper, Scissors – A simple game with deeper strategic implications.
+        """
+    )
+
 with credits:
     st.header("Project Credits & Documentation")
 
-    # Group members section
     with st.container(border=True):
         st.subheader("Team Members")
         col1, col2 = st.columns(2)
         with col1:
             st.markdown("""
-            - **John Doe**
-            - **Jane Smith**
-            - **Alex Johnson**
+            - **Taras Zinchenko**
+            - **Tim Huijbens**
+            - **Jan Jelínek**
             """)
         with col2:
             st.markdown("""
-            - **Sam Wilson**
-            - **Emily Brown**
-            - **Michael Lee**
+            - **Žygimantas Mickavičius**
+            - **Jaden Mannes**
             """)
 
     # References section
