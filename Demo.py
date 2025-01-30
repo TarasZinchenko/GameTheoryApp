@@ -65,9 +65,9 @@ st.set_page_config(page_title="Game Theory Suite", layout="wide")
 st.title("Game Theory Application Suite")
 
 # Create tabs
-credits, prison, iesds, stop_light, sexes, penalty, take_or_share, rps, conclusion = st.tabs(
-    ["Credits", "Prisoner's dilema", "IESDS", "Stop light", "Battle of sexes", "Penalty Kick Analyzer",
-     "Take vs. Share Dilemma", "Rock Paper Scissors", "Conclusion?"])
+introduction, prison, iesds, stop_light, sexes, penalty, take_or_share, rps, credits = st.tabs(
+    ["Introduction", "Prisoner's dilema", "IESDS", "Stop light", "Battle of sexes", "Penalty Kick Analyzer",
+     "Take vs. Share Dilemma", "Rock Paper Scissors", "Credits"])
 
 # ====================================================================================
 # Tab 1: Penalty Kick Analyzer
@@ -496,3 +496,28 @@ def payoff(player1, player2):
 
 with prison:
     prisoners_dilemma()
+
+with introduction:
+    st.title("Introduction")
+
+    st.write(
+        """
+        ##### Game Theory is all around us—whether we realize it or not. From negotiations and traffic decisions to sports strategies and even everyday choices, the way we interact with others follows strategic patterns. Our app is designed to bring these concepts to life through interactive experiences that let you explore, play, and learn at your own pace.
+
+        ##### With our app, you won’t just read about Game Theory—you’ll experience it. Dive into classic strategic dilemmas and test your decision-making skills with our interactive modules:
+        
+        ##### The Prisoner’s Dilemma – A classic example of why cooperation is hard, even when it's beneficial.
+        
+        ##### IESDS (Iterated Elimination of Strictly Dominated Strategies) – A method to predict rational choices in strategic games.
+        
+        ##### The Stoplight Game – A real-world application of Nash Equilibrium in traffic decisions.
+        
+        ##### The Battle of the Sexes – Exploring mixed strategies and payoffs in coordination problems.
+        
+        ##### Penalty Kick Analyzer – How professional athletes use mixed strategies in real-life competition.
+        
+        ##### Take vs. Share Dilemma – Examining the tension between selfishness and cooperation.
+        
+        ##### Rock, Paper, Scissors – A simple game with deeper strategic implications.
+        """
+    )
